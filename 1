@@ -1,0 +1,240 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct 
+{
+	int pid;
+	int at;
+	int bt;
+	int st;
+	int ct;
+	int tat;
+	int wt;
+	int rt;
+	
+}process;
+int comapre(const void* pa,const void*pb)
+{
+	const process *p1=pa;
+	const process *p2=pb;
+	return p1->at-p2->at;
+}
+int max(int a,int b)
+{
+	if (a>b)
+	{
+		return a;
+	}
+	return b;
+}
+process p[100];
+int total_wt=0;
+int total_tat=0;
+int total_rt=0;
+int main()
+{
+ int n;
+ printf("Enter the number of process\n");
+ scanf("%d",&n);
+ for (int i = 0; i < n; ++i)
+ {
+ 	printf("Enter the arrival time of process -%d",i+1);
+ 	scanf("%d",&p[i].at);
+ 	printf("Enter the burst time of process -%d",i+1);
+ 	scanf("%d",&p[i].bt);
+ }
+ qsort(p,n,sizeof(process),comapre);
+ for (int i = 0; i < n; ++i)
+ {
+ 	if (i==0)
+ 	{
+ 		p[i].st=p[i].at;
+ 		/* code */
+ 	}
+ 	else
+ 	{
+ 		p[i].st=max(p[i].at,p[i-1].ct);
+ 	}
+ 	p[i].ct=p[i].st+p[i].bt;
+ 	p[i].tat=p[i].ct-p[i].at;
+ 	p[i].wt=p[i].tat-p[i].bt;
+ 	p[i].rt=p[i].st-p[i].at;
+   total_tat+=p[i].tat;
+   total_wt+=p[i].wt;
+   total_rt+=p[i].rt;
+ 
+ 
+}
+printf("%d\n",total_tat);
+printf("%.2f\n",(float)total_tat/n);
+
+printf("%.2f\n",(float)total_wt/n);
+printf("%.2f",(float)total_rt/n);
+}
+
+------------------------
+
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct 
+{
+  int pid;
+  int AT;
+  int BT;
+  int ST;
+  int CT;
+  int TAT;
+  int WT;
+  int RT;
+  
+}process;
+
+process p[100];
+int total_wt=0;
+int total_tat=0;
+int total_rt=0;
+
+int main()
+{
+ int n;
+ printf("Enter the number of process\n");
+ scanf("%d",&n);
+
+ int is_completed[n];
+ for (int i = 0; i < n; ++i)
+ {
+  is_completed[i]=0;
+   /* code */
+ }
+ for (int i = 0; i < n; ++i)
+ {
+  printf("Enter the arrival time of process -%d",i+1);
+  scanf("%d",&p[i].AT);
+  printf("Enter the burst time of process -%d",i+1);
+  scanf("%d",&p[i].BT);
+ }
+int C=0;//c is for current time
+int Completed=0;
+while( Completed != n)
+{ 
+  
+  int idx=-1;
+  int mn=100000;
+for(int i=0;i<n;i++)
+ { 
+  if(p[i].AT<=C && is_completed[i]==0)
+  {
+    if (p[i].BT<mn)
+    {
+      mn=p[i].BT;
+      idx=i;
+    }
+    if (p[i].BT==mn)
+    {
+      if (p[i].AT<p[idx].AT)
+      {
+        mn=p[i].BT;
+        idx=i;
+      }
+    }
+  }
+ }
+ if (idx != -1)
+ {
+          p[idx].ST = C;//     ------------------------>imp
+            p[idx].CT = p[idx].ST + p[idx].BT;
+            p[idx].TAT = p[idx].CT - p[idx].AT;
+            p[idx].WT = p[idx].TAT - p[idx].BT;
+            p[idx].RT = p[idx].ST - p[idx].AT;
+    
+           total_tat+=p[idx].TAT;
+           total_wt+=p[idx].WT;
+           total_rt+=p[idx].RT;
+
+            is_completed[idx] = 1;
+            Completed++;//-------------------
+            C = p[idx].CT;//-------------
+            
+ }
+ else
+ {
+C++;
+ }
+}
+
+printf("%d\n",total_tat);
+printf("%.2f\n",(float)total_tat/n);
+
+printf("%.2f\n",(float)total_wt/n);
+printf("%.2f",(float)total_rt/n);
+  return 0;
+}
+
+
+
+
+
+
+-----
+
+
+
+
+
+
+
+
+
+#include<stdio.h>
+ 
+int main()
+{
+ 
+  int i,j,n,time,k,flag=0,tq;
+  int WT=0,TAT=0,at[10],bt[10],rt[10];
+  printf("Enter Total Process:\t ");
+  scanf("%d",&n);
+  k=n;
+  for(i=0;i<n;i++)
+  {
+    printf("Enter Arrival Time of %d",i+1);
+    scanf("%d",&at[i]);
+    printf("Enter Burst  Time of %d",i+1);
+    scanf("%d",&bt[i]);
+    rt[i]=bt[i];
+  }
+  printf("Enter Time Quantum:\t");
+  scanf("%d",&tq);
+  printf("\n\nProcess\t Turnaround Time Waiting Time\n\n");
+  for(time=0,i=0;k!=0;)
+  {
+    if(rt[i]<=tq && rt[i]>0)
+    {
+      time+=rt[i];
+      rt[i]=0;
+      flag=1;
+    }
+    else if(rt[i]>0)
+    {
+      rt[i]-=tq;
+      time+=tq;
+    }
+    if(rt[i]==0 && flag==1)
+    {
+      k--;
+      printf("P[%d]\t \t%d\t \t%d\n",i+1,time-at[i],time-at[i]-bt[i]);
+      WT+=time-at[i]-bt[i];
+      TAT+=time-at[i];
+      flag=0;
+    }
+    if(i==n-1)
+      i=0;
+    else if(at[i+1]<=time)
+      i++;
+    else
+      i=0;
+  }
+  printf("\nAvg Waiting Time= %f\n",WT*1.0/n);
+  printf("Avg Turnaround Time = %f",TAT*1.0/n);
+  
+  return 0;
+}
