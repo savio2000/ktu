@@ -1,0 +1,40 @@
+#include <stdio.h>
+int main(int argc, char const *argv[])
+{
+    int p,f,pagesfault;
+    printf("Enter the number of pages\n");
+    scanf("%d",&p);
+    int pages[p];
+    printf("Enter the number of frames\n");
+    scanf("%d",&f);
+    int frames[f];
+    printf("Enter the pages");
+    for (int i = 0; i < p; ++i)
+    {
+    	scanf("%d",&pages[i]);
+    }
+   
+    int k=0;
+    for (int i = 0; i < p; ++i)
+    {   int count=0;
+    	for (int j = 0; j < f; ++j)
+    	{
+            if(frames[j]!=pages[i])
+            {
+                count++;
+            }
+            if (count==f)
+            {
+                pagesfault++;
+                frames[k]=pages[i];
+                k=(k+1)%f;
+                /* code */
+            }
+
+    		
+    	}
+    }
+    printf("%d",pagesfault);
+
+	return 0;
+}
