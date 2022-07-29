@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-
+//client.txt
 #define SIZE 1024
 
 void write_file(int sockfd, struct sockaddr_in addr)
